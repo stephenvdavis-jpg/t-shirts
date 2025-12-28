@@ -4,43 +4,55 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Design • Btown Brief Merch</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=1.1" />
 </head>
 <body>
-  <header class="wrap header">
-    <a class="brand" href="index.html">Btown Brief Merch</a>
-    <nav class="nav">
-      <a href="index.html">← All designs</a>
-    </nav>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">Btown<span>Brief</span></a>
+      <nav class="nav">
+        <a href="index.html" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          All Designs
+        </a>
+      </nav>
+    </div>
   </header>
 
-  <main class="wrap">
-    <section class="design">
-      <div class="designMedia">
-        <img id="img" alt="" />
+  <main class="main container">
+    <section class="design-detail">
+      <div class="design-hero">
+        <img id="img" src="" alt="Loading..." />
       </div>
 
-      <div class="designInfo">
-        <h1 id="title"></h1>
-        <div id="desc" class="muted"></div>
+      <div class="design-info">
+        <div>
+          <h1 id="title" class="design-title"></h1>
+          <p class="design-subtitle">Make a selection to view all 3–7 color options</p>
+          <div id="desc" class="design-description"></div>
+        </div>
 
-        <div class="selection-area">
-          <p class="section-label">CHOOSE A PRODUCT</p>
-          <div id="buttons" class="buttons">
+        <div>
+          <p class="section-header">Choose a Product</p>
+          <div id="buttons" class="product-buttons">
             </div>
         </div>
 
-        <p class="note">
-          Sizes & colors are selected on the checkout page. 
-          <br>Refunds are for quality control, not fit.
+        <p class="sizing-warning">
+          Be sure to check out shirt measurements on next page before ordering. 
+          Refunds are for quality control, not fit.
         </p>
       </div>
     </section>
-
-    <footer class="footer">
-      <p>© <span id="year"></span> Btown Brief</p>
-    </footer>
   </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Btown Brief</p>
+    </div>
+  </footer>
 
   <script src="data.js"></script>
   <script src="design.js"></script>

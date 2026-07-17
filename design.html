@@ -22,7 +22,14 @@
   </header>
 
   <main class="main container">
-    <section class="design-detail">
+    <section class="retired-state" id="retired" hidden>
+      <p class="section-kicker">From the archive</p>
+      <h1>This design has been retired.</h1>
+      <p>It is no longer in the current merch lineup.</p>
+      <a href="index.html" class="home-link">Browse live designs</a>
+    </section>
+
+    <section class="design-detail" id="design-content">
       <div class="design-hero">
         <img id="img" src="" alt="Loading..." />
       </div>
@@ -30,7 +37,7 @@
       <div class="design-info">
         <div>
           <h1 id="title" class="design-title"></h1>
-          <p class="design-subtitle">Make a selection to view all 3–7 color options</p>
+          <p id="starting-price" class="design-price"></p>
           <div id="desc" class="design-description"></div>
         </div>
 
@@ -45,6 +52,14 @@
           Refunds are for quality control, not fit.
         </p>
       </div>
+    </section>
+
+    <section class="design-worn merch-section" id="design-worn" hidden aria-labelledby="design-worn-title">
+      <div class="section-heading">
+        <p class="section-kicker">Out in Burlington</p>
+        <h2 id="design-worn-title">Worn around town</h2>
+      </div>
+      <div class="worn-grid" id="design-worn-grid"></div>
     </section>
   </main>
 

@@ -3,6 +3,58 @@
  * 77 products across 15 designs
  */
 
+// MERCH CONTROLS
+// Set a design to "cut" to retire it from the page without deleting anything.
+// Reorder DESIGN_ORDER to rank designs within the featured and main grids.
+// Add or remove a slug in FEATURED_DESIGNS to make its card larger at the top.
+// For worn photos: drop a jpg in worn/, then add one line to WORN_PHOTOS.
+const DESIGN_STATUS = {
+  "breakwater-lighthouse": "live",
+  "btown-brief-logo": "live",
+  "burlington-gray": "live",
+  "champus-fossil": "live",
+  "church-cherry-st-bike": "live",
+  "filing-cabinet": "live",
+  "grade-a-twist": "live",
+  "grid-of-btv": "live",
+  "lake-glass": "live",
+  "one-rats-nest": "live",
+  "port-of-burlington": "live",
+  "sturgeon": "live",
+  "sunset-mountains": "live",
+  "university-of-the-pit": "live",
+  "zebra-mussel": "live"
+};
+
+const DESIGN_ORDER = [
+  "zebra-mussel",
+  "champus-fossil",
+  "sturgeon",
+  "sunset-mountains",
+  "breakwater-lighthouse",
+  "btown-brief-logo",
+  "burlington-gray",
+  "church-cherry-st-bike",
+  "filing-cabinet",
+  "grade-a-twist",
+  "grid-of-btv",
+  "lake-glass",
+  "one-rats-nest",
+  "port-of-burlington",
+  "university-of-the-pit"
+];
+
+const FEATURED_DESIGNS = new Set([
+  "zebra-mussel",
+  "champus-fossil",
+  "sturgeon",
+  "sunset-mountains"
+]);
+
+const WORN_PHOTOS = [
+  // { file: "worn/mussel-church-st.jpg", caption: "Zebra Mussel on Church St", design: "zebra-mussel" }
+];
+
 // Raw product data from Printify
 const rawProducts = [
   { href: "https://btown-b-merch.printify.me/product/25588858/sunset-and-amp-mountains-back-print", title: "Sunset & Mountains BACK PRINT", price: "$25.00" },
@@ -282,8 +334,18 @@ function processProducts() {
 // Run processing and audit
 const { designs, bucketCounts, unclassified, uniqueUrls } = processProducts();
 
-// Convert to array for easier iteration
-const designsArray = Object.values(designs);
+// Layer merchandising controls on top of the grouped product data.
+const orderBySlug = new Map(DESIGN_ORDER.map((slug, index) => [slug, index]));
+const allDesignsArray = Object.values(designs)
+  .map(design => ({
+    ...design,
+    status: DESIGN_STATUS[design.slug] || 'live',
+    featured: FEATURED_DESIGNS.has(design.slug),
+    order: orderBySlug.has(design.slug) ? orderBySlug.get(design.slug) : Number.MAX_SAFE_INTEGER
+  }))
+  .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+
+const designsArray = allDesignsArray.filter(design => design.status !== 'cut');
 
 // Audit output
 console.log('=== BTOWN BRIEF MERCH AUDIT ===');
@@ -312,8 +374,8 @@ if (uniqueUrls.size !== 77) {
   console.log('✅ VALIDATION PASSED: 77 unique product URLs');
 }
 
-if (designsArray.length !== 15) {
-  console.error(`❌ VALIDATION FAILED: Expected 15 designs, got ${designsArray.length}`);
+if (allDesignsArray.length !== 15) {
+  console.error(`❌ VALIDATION FAILED: Expected 15 designs, got ${allDesignsArray.length}`);
 } else {
   console.log('✅ VALIDATION PASSED: 15 designs');
 }
@@ -328,4 +390,6 @@ designsArray.forEach(d => {
 // Export for use in other scripts
 if (typeof window !== 'undefined') {
   window.DESIGNS = designsArray;
+  window.ALL_DESIGNS = allDesignsArray;
+  window.WORN_PHOTOS = WORN_PHOTOS;
 }

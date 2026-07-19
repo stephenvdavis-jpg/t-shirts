@@ -11,6 +11,11 @@
     desc: document.getElementById('desc'),
     img: document.getElementById('img'),
     buttons: document.getElementById('buttons'),
+    startingPrice: document.getElementById('starting-price'),
+    content: document.getElementById('design-content'),
+    retired: document.getElementById('retired'),
+    worn: document.getElementById('design-worn'),
+    wornGrid: document.getElementById('design-worn-grid'),
     year: document.getElementById('year')
   };
 
@@ -37,14 +42,44 @@
   }
 
   function findDesign(slug) {
-    if (!window.DESIGNS || !Array.isArray(window.DESIGNS)) return null;
-    return window.DESIGNS.find(d => d.slug === slug);
+    if (!window.ALL_DESIGNS || !Array.isArray(window.ALL_DESIGNS)) return null;
+    return window.ALL_DESIGNS.find(d => d.slug === slug);
+  }
+
+  function getStartingPrice(design) {
+    const prices = Object.values(design.products)
+      .filter(Boolean)
+      .map(product => Number.parseFloat(product.price.replace(/[^0-9.]/g, '')))
+      .filter(Number.isFinite);
+
+    return prices.length ? `From $${Math.min(...prices).toFixed(0)}` : '';
+  }
+
+  function renderWornPhotos(design) {
+    const photos = (window.WORN_PHOTOS || []).filter(photo => photo.design === design.slug);
+    if (!elements.worn || !elements.wornGrid || photos.length === 0) return;
+
+    elements.wornGrid.innerHTML = photos.map(photo => `
+      <figure class="worn-photo">
+        <img src="${photo.file}" alt="${photo.caption}" loading="lazy">
+        <figcaption>${photo.caption}</figcaption>
+      </figure>
+    `).join('');
+    elements.worn.hidden = false;
+  }
+
+  function renderRetired() {
+    document.title = 'Retired Design • Btown Brief Merch';
+    if (elements.content) elements.content.hidden = true;
+    if (elements.retired) elements.retired.hidden = false;
+    if (elements.year) elements.year.textContent = new Date().getFullYear();
   }
 
   function renderDesign(design) {
     // 1. Update basic text and image
     document.title = `${design.name} • Btown Brief Merch`;
     if (elements.title) elements.title.textContent = design.name;
+    if (elements.startingPrice) elements.startingPrice.textContent = getStartingPrice(design);
     if (elements.desc) elements.desc.innerHTML = design.description || '';
     if (elements.img) {
       elements.img.src = design.image;
@@ -74,6 +109,8 @@
         }
       });
     }
+
+    renderWornPhotos(design);
   }
 
   function init() {
@@ -82,7 +119,11 @@
 
     const design = findDesign(slug);
     if (design) {
-      renderDesign(design);
+      if (design.status === 'cut') {
+        renderRetired();
+      } else {
+        renderDesign(design);
+      }
     } else {
       console.error("Design not found for slug:", slug);
     }
